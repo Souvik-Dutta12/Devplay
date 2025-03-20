@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "type": "module",
   "main": "server.js",
-  "scripts": {
-    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
-  },
   "repository": {
     "type": "git",
     "url": "DevPlay"
