@@ -7,6 +7,12 @@ import {asyncHandler} from "../utils/asyncHandler.js"
 const toggleVideoLike = asyncHandler(async (req, res) => {
     const {videoId} = req.params
     //TODO: toggle like on video
+
+    if(!videoId){
+        throw new ApiError(400, "Video id is required")
+    }
+
+    
 })
 
 const toggleCommentLike = asyncHandler(async (req, res) => {
