@@ -6,6 +6,8 @@ import MobileDock from './components/MobileDock'
 import 'remixicon/fonts/remixicon.css'
 import Signup from './pages/Signup'
 import Login from './pages/Login'
+import Subscription from './pages/Subscription'
+import Playlist from './pages/Playlist'
 
 const App = () => {
   return (
@@ -42,12 +44,12 @@ const App = () => {
       </div>
 
       {/* Main Content */}
-      <div className='w-[100vw] md:w-6/7 h-screen absolute left-0 md:left-50 py-10 px-3 bg-base-200'>
+      <div className='scroll-container w-[100vw] md:w-6/7 min-h-screen max-h-screen absolute left-0 md:left-50 py-40 md:py-27 pr-0 md:pr-3 pl-0 md:pl-8  bg-base-200 overflow-y-auto '>
         <Routes>
           <Route path='/' element={<Home />} />
 
-          <Route path='/subscriptions' element={<Home />} />
-          <Route path='/playlists' element={<Home />} />
+          <Route path='/subscriptions' element={<Subscription />} />
+          <Route path='/playlists' element={<Playlist />} />
           <Route path='/your-videos' element={<Home />} />
           <Route path='/liked-videos' element={<Home />} />
           <Route path='/history' element={<Home />} />

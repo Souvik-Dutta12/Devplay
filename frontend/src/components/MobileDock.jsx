@@ -18,7 +18,7 @@ const MobileDock = () => {
                 <span className="dock-label text-xs">Subs</span>
             </Link>
 
-            <Link to={'/'} className='bg-base-300 rounded-full p-0 w-auto h-20 flex items-center justify-center -mt-15'>
+            <Link to={'/'} className='bg-base-300 border-4 border-base-100 rounded-full p-0 w-auto h-20 flex items-center justify-center -mt-15'>
                 <i className="ri-add-line mr-1 text-3xl"></i>
             </Link>
 
