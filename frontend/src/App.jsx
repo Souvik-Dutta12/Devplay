@@ -8,6 +8,7 @@ import Signup from './pages/Signup'
 import Login from './pages/Login'
 import Subscription from './pages/Subscription'
 import Playlist from './pages/Playlist'
+import YourVideo from './pages/YourVideo'
 
 const App = () => {
   return (
@@ -50,7 +51,7 @@ const App = () => {
 
           <Route path='/subscriptions' element={<Subscription />} />
           <Route path='/playlists' element={<Playlist />} />
-          <Route path='/your-videos' element={<Home />} />
+          <Route path='/your-videos' element={<YourVideo />} />
           <Route path='/liked-videos' element={<Home />} />
           <Route path='/history' element={<Home />} />
         </Routes>

@@ -4,20 +4,22 @@ import PlaylistCard from '../components/PlaylistCard'
 const Playlist = () => {
   return (
     <div className='w-full h-auto flex flex-col'>
-      <h1 className='px-4 py-2 text-5xl font-semibold'>Playlists</h1>
+      <div className='px-0 md:px-10 flex flex-col gap-3 md:flex-row md:justify-between md:items-center'>
+        <h1 className='px-4 py-2 text-5xl font-semibold'>Playlists</h1>
 
-      <div className="dropdown px-4 py-1">
-        <label tabIndex={0} className="btn btn-outline  bg-base-100 m-1">
-          A-Z<i className="ri-arrow-down-s-line"></i>
-        </label>
-        <ul
-          tabIndex={0}
-          className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
-        >
-          <li><div >A-Z</div></li>
-          <li><div >Recently Added</div></li>
+        <div className="dropdown px-4 py-1 mr-20">
+          <label tabIndex={0} className="btn btn-outline bg-base-100 m-1">
+            A-Z<i className="ri-arrow-down-s-line"></i>
+          </label>
+          <ul
+            tabIndex={0}
+            className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+          >
+            <li><div >A-Z</div></li>
+            <li><div >Recently Added</div></li>
 
-        </ul>
+          </ul>
+        </div>
       </div>
 
 
