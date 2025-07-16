@@ -133,7 +133,7 @@ const Subscription = () => {
     ];
     return (
         <div className='w-full h-auto flex flex-col'>
-            <h1 className='px-4 py-1 text-2xl font-semibold'>Latest</h1>
+            <h1 className='px-4 py-1 text-4xl font-bold'>Latest</h1>
             <div
                 className="tags flex items-center gap-2 overflow-x-auto whitespace-nowrap px-4 py-2"
                 style={{
