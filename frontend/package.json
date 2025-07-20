@@ -10,8 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.35.3",
     "@tailwindcss/vite": "^4.1.11",
     "daisyui": "^5.0.46",
+    "dotenv": "^17.2.0",
     "framer-motion": "^12.23.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

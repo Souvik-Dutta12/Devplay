@@ -1,58 +1,30 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-
-const slideVariants = {
-  hiddenLeft: { opacity: 0, x: -50 },
-  hiddenRight: { opacity: 0, x: 50 },
-  visible: { opacity: 1, x: 0 },
-};
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
 
 const Login = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-base-100 px-4 mx-auto">
-      <div className="max-w-5xl w-full grid md:grid-cols-2 gap-8 items-center relative overflow-hidden">
-        {/* Left Side Login Form */}
-        <motion.div
-          initial="hiddenRight"
-          animate="visible"
-          transition={{ duration: 0.6 }}
-          variants={slideVariants}
-          className="flex flex-col items-center gap-3"
-        >
-          <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-full border p-6">
-            <legend className="fieldset-legend text-xl font-semibold">Login</legend>
+    <div className="min-h-screen w-full flex items-center justify-center bg-base-100 px-4">
+      <div className="max-w-2xl w-full text-center flex flex-col items-center gap-6">
+        {/* Devplay Heading */}
+        <h1 className="text-7xl font-bold text-primary">Devplay</h1>
 
-            <label className="label mt-2 text-md">Email</label>
-            <input type="email" className="input input-bordered w-full text-md" placeholder="Email" />
+        {/* Description */}
+        <p className="text-xl text-base-content/80 max-w-xl">
+          A platform to explore, create, and share developer-focused video content. Learn from peers, contribute your knowledge, and become a part of the global dev community.
+        </p>
 
-            <label className="label mt-2 text-md">Password</label>
-            <input type="password" className="input input-bordered w-full text-md" placeholder="Password" />
+        {/* Auth Area */}
+        <SignedOut>
+          <SignInButton>
+            <button className="btn mt-4 px-6 py-3 btn-primary btn-outline btn-lg text-white hover:text-base-300 font-semibold rounded-xl hover:bg-primary-focus transition">
+              Sign In to Get Started <i className="ri-login-box-line"></i>
+            </button>
+          </SignInButton>
+        </SignedOut>
 
-            <button className="btn btn-neutral w-full mt-4">Log In</button>
-
-            <p className="text-sm text-base-content/60 mt-3">
-              Don't have an account?{' '}
-              <Link to="/signup" className="text-primary hover:underline font-semibold">
-                Sign up here
-              </Link>
-            </p>
-          </fieldset>
-        </motion.div>
-
-        {/* Right Side Text */}
-        <motion.div
-          initial="hiddenLeft"
-          animate="visible"
-          transition={{ duration: 0.6 }}
-          variants={slideVariants}
-          className="space-y-4 text-left"
-        >
-          <h1 className="text-7xl font-bold text-shadow-base-content">Welcome Back</h1>
-          <p className="text-lg text-base-content/80">
-            Log in to your <b>Devplay</b> account to watch, upload, and interact with tech content from developers around the world.
-          </p>
-        </motion.div>
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
       </div>
     </div>
   );

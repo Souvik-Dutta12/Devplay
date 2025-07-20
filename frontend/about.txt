@@ -1,0 +1,19 @@
+import { useAuth } from '@clerk/clerk-react';
+
+const { getToken } = useAuth();
+
+const sendDataToBackend = async () => {
+  const token = await getToken(); // Clerk JWT
+
+  const res = await fetch('http://localhost:5000/api/some-protected-route', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ something: "value" }),
+  });
+
+  const data = await res.json();
+  console.log(data);
+};
