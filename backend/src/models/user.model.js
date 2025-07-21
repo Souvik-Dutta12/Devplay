@@ -4,6 +4,15 @@ import bcrypt from 'bcrypt';
 
 const userSchema = new Schema(
     {   
+        username:{
+            type:String,
+        },
+        description:{
+            type: String,
+        },
+        channelName:{
+            type:String,
+        },
         clerkId:{
             type: String,
             required: true,

@@ -8,14 +8,14 @@ import {uploadOnCloudinary} from "../utils/cloudinary.js"
 
 
 const getAllVideos = asyncHandler(async (req, res) => {
-    const { page = 1, limit = 10, query, sortBy = "createdAt", sortType = "desc", userId } = req.query
+    const { query, sortBy = "createdAt", sortType = "desc",clerkId } = req.query
     //TODO: get all videos based on query, sort, pagination
     const filters = {};
         if (query) {
             filters.title = { $regex: query, $options: "i" }; // Case-insensitive search by title
         }
-        if (userId) {
-            filters.userId = userId; // Filter by user ID if provided
+        if (clerkId) {
+            filters.userId = clerkId; // Filter by user ID if provided
         }
 
         const sortOptions = {};
@@ -23,20 +23,12 @@ const getAllVideos = asyncHandler(async (req, res) => {
 
         const videos = await Video.find(filters)
             .sort(sortOptions)
-            .skip((page - 1) * limit)
-            .limit(parseInt(limit));
 
         const totalVideos = await Video.countDocuments(filters);
 
         res.status(200).json({
             success: true,
-            data: videos,
-            pagination: {
-                total: totalVideos,
-                page: parseInt(page),
-                limit: parseInt(limit),
-                totalPages: Math.ceil(totalVideos / limit)
-            }
+            data: videos,     
         });
 })
 

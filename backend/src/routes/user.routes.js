@@ -1,50 +1,25 @@
 import {Router} from "express";
 import { 
-    loginUser, 
-    logoutUser, 
-    registerUser, 
-    refreshAccessToken, 
-    changeCurrentPassword, 
-    getCurrentUser, 
-    updateAccountDetails, 
-    updateUserAvatar, 
-    updateUserCoverImage, 
-    getUserChannelProfile, 
-    getWatchHistory 
+    getMyProfile,
+  updateMyProfile,
+  getUserByUsername,
+  subscribeToUser,
+  unsubscribeFromUser,
+  addToWatchHistory
 } from "../controllers/user.controller.js";
-import {upload} from "../middlewares/multer.middleware.js"
+import {upload,uploadFields} from "../middlewares/multer.middleware.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.route("/register").post(
-    upload.fields([
-        {
-            name: "avatar",
-            maxCount: 1
-        }, 
-        {
-            name: "coverImage",
-            maxCount: 1
-        }
-    ]),
-    registerUser
-    )
+// Protected routes
+router.get("/me", verifyJWT, getMyProfile);
+router.patch("/update", verifyJWT, uploadFields, updateMyProfile);
+router.post("/history", verifyJWT, addToWatchHistory);
+router.post("/subscribe/:username", verifyJWT, subscribeToUser);
+router.post("/unsubscribe/:username", verifyJWT, unsubscribeFromUser);
 
-
-
-router.route("/login").post(loginUser)
-
-
-//secured routes
-router.route("/logout").post(verifyJWT, logoutUser)
-router.route("/refresh-token").post(refreshAccessToken)
-router.route("/change-password").post(verifyJWT,changeCurrentPassword)
-router.route("/current-user").get(verifyJWT, getCurrentUser)
-router.route("/update-account").patch(verifyJWT,updateAccountDetails)
-router.route("/avatar").patch(verifyJWT,upload.single("avatar"),updateUserAvatar)
-router.route("/cover-image").patch(verifyJWT,upload.single("coverImage"), updateUserCoverImage)
-router.route("/c/:username").get(verifyJWT, getUserChannelProfile)
-router.route("/history").get(verifyJWT, getWatchHistory)
+// Public route
+router.get("/:username", getUserByUsername);
 
 export default router;

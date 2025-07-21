@@ -3,28 +3,32 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken"
 import { User } from "../models/user.model.js";
 
-export const verifyJWT = asyncHandler( async (req, _, next) => {
+export const verifyJWT = asyncHandler(async (req, _, next) => {
     try {
-        const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
-        
-        // console.log(token);
-        if (!token) {
-            throw new ApiError(401, "Unauthorized request")
+        const { userId } = getAuth(req);
+
+        if (!userId) {
+            throw new ApiError(401, "Unauthorized request: Clerk user not found");
         }
-    
-        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
-    
-        const user = await User.findById(decodedToken?._id).select("-password -refreshToken")
-    
+
+        let user = await User.findOne({ clerkId: userId });
+
+        // First time login → create new MongoDB user
         if (!user) {
-            
-            throw new ApiError(401, "Invalid Access Token")
+            const clerkUser = await clerkClient.users.getUser(userId);
+
+            user = await User.create({
+                clerkId: userId,
+                email: clerkUser.emailAddresses[0]?.emailAddress || "",
+                avatar: clerkUser.imageUrl,
+                username: clerkUser.username || clerkUser.firstName || "",
+            });
         }
-    
+
         req.user = user;
-        next()
+        next();
     } catch (error) {
         throw new ApiError(401, error?.message || "Invalid access token")
     }
-    
+
 })
