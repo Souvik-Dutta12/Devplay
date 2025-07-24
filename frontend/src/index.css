@@ -2,10 +2,3 @@
 @plugin "daisyui" {
   themes: coffee --default;
 }
-
-.tags::-webkit-scrollbar {
-  display: none;
-}
-.scroll-container::-webkit-scrollbar {
-  display: none;
-}
