@@ -3,7 +3,7 @@ import logo from "/devplayLogo.png"
 
 const Navbar = () => {
     return (
-        <div className='flex items-center px-5 py-3 shadow justify-between bg-base-300 sticky top-0 z-10'>
+        <div className='flex items-center px-5 py-3 shadow-xl justify-between bg-base-300 sticky top-0 z-10'>
             <div className='left flex items-center'>
                 <i className="ri-menu-2-line text-xl font-bold mr-[25px] cursor-pointer"></i>
                 <h1 className='flex items-center text-xl ml-5 cursor-pointer'>
