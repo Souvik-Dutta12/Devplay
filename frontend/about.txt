@@ -17,3 +17,6 @@ const sendDataToBackend = async () => {
   const data = await res.json();
   console.log(data);
 };
+
+
+//shopping  live  podcasts

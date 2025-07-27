@@ -1,15 +1,16 @@
 import React from 'react'
 import logo from "/devplayLogo.png"
+import { Link } from 'react-router-dom'
 
 const Navbar = ({setSidebarOpen}) => {
     return (
         <div className='flex w-[100vw] items-center px-5 py-3 shadow-xl justify-between bg-base-300 sticky top-0 z-10'>
             <div className='left flex items-center'>
                 <i onClick={()=>setSidebarOpen(prev=>!prev)} className="ri-menu-2-line text-xl font-bold mr-[25px] cursor-pointer"></i>
-                <h1 className='flex items-center text-xl ml-0 md:ml-5 cursor-pointer'>
+                <Link to="/" className='flex items-center text-xl ml-0 md:ml-5 cursor-pointer'>
                     <img className='w-10' src={logo} alt='logo' />
                     <p className='font-bold'> Devplay</p>
-                </h1>
+                </Link>
             </div>
 
             <div className='midle flex items-center'>
