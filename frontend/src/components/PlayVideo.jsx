@@ -23,7 +23,7 @@ const PlayVideo = ({videoId}) => {
     }
 
     const fetchComments = async () => {
-        const res = await axios.get(`https://www.googleapis.com/youtube/v3/commentThreads?part=snippet,contentDetails,statistics&id=${videoId}&key=${import.meta.env.VITE_YOUTUBE_API_KEY}`)
+        const res = await axios.get(`https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&key=${import.meta.env.VITE_YOUTUBE_API_KEY}`)
 
         setComments(res.data.items)
 
@@ -37,15 +37,20 @@ const PlayVideo = ({videoId}) => {
             return val;
         }
     }
-    useEffect(()=>{
-        fetchVideoData()
-        fetchChannelData()
-        fetchComments()
-    },[vidData])
+    useEffect(() => {
+    fetchVideoData();
+}, [videoId]); 
+
+useEffect(() => {
+    if (vidData?.snippet?.channelId) {
+        fetchChannelData();
+        fetchComments();
+    }
+}, [vidData]);
 
     return (
         <div className='w-full  md:w-2/3'>
-           <iframe className='w-full h-1/3 rounded-xl' src={`https://www.youtube.com/embed/${videoId}?autoplay=1`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"  ></iframe>
+           <iframe className='w-full h-[300px] md:h-[500px] rounded-xl' src={`https://www.youtube.com/embed/${videoId}?autoplay=1`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"  ></iframe>
             <h3 className='text-2xl font-bold mt-3'>{vidData?vidData.snippet.title:"Tittle here"}</h3>
             <div className="flex items-center justify-between flex-wrap mt-1 text-sm text-base-content/60">
                 <p>{vidData?valueConverter(vidData.statistics.viewCount):"16K"} Views &bull; {vidData?.snippet?.publishedAt && moment(vidData.snippet.publishedAt).fromNow()}</p>
@@ -92,7 +97,7 @@ const PlayVideo = ({videoId}) => {
                          <div className='flex' key={index}>
                         <img src={comment?.snippet?.topLevelComment?.snippet?.authorProfileImageUrl} className="ri-user-line flex items-center justify-center text-2xl bg-base-300 rounded-full w-12 h-12 text-center flex-shrink-0"/>
                         <div className='flex flex-col ml-3'>
-                            <h3 className='font-bold'>{comment?.snippet?.topLevelComment?.snippet?.authorDisplayName} <span className='text-sm text-base-content/60 font-normal ml-3'>1 day ago</span></h3>
+                            <h3 className='font-bold'>{comment?.snippet?.topLevelComment?.snippet?.authorDisplayName} <span className='text-sm text-base-content/60 font-normal ml-3'>{moment(comment?.snippet?.topLevelComment?.snippet?.publishedAt).fromNow()}</span></h3>
                             <p className='flex flex-wrap'>{comment?.snippet?.topLevelComment?.snippet?.textDisplay}</p>
                             <div className="cmnt-action flex gap-5 items-center text-base-content/60 mt-2">
                                 <span className='cursor-pointer flex items-center justify-center gap-1  duration-300 hover:text-base-content hover:font-bold'>
