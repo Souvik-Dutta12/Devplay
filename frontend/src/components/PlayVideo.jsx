@@ -2,7 +2,7 @@ import React from 'react'
 
 const PlayVideo = () => {
     return (
-        <div className=' w-2/3'>
+        <div className='w-full  md:w-2/3'>
             <video className='w-full rounded-xl' src="demo.mp4" controls autoPlay muted></video>
             <h3 className='text-2xl font-bold mt-3'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum, dolore! Consequuntur facilis excepturi fugit at!</h3>
             <div className="flex items-center justify-between flex-wrap mt-1 text-sm text-base-content/60">
@@ -10,7 +10,7 @@ const PlayVideo = () => {
 
             </div>
 
-            <div className='flex items-center justify-between mt-3'>
+            <div className='flex flex-col md:flex-row gap-5 md:gap-0 items-center justify-between mt-3'>
                 <div className='flex'>
                     <i className="ri-user-line flex items-center justify-center text-2xl bg-base-300 rounded-full w-12 h-12 text-center "></i>
                     <div className='flex  ml-3 justify-between gap-20'>
