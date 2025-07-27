@@ -1,8 +1,18 @@
-import React from 'react'
+import React, { useEffect,useState } from 'react'
 
-const Sidebar = () => {
+const Sidebar = ({sidebarOpen}) => {
+const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024); // Tailwind lg = 1024px
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   return (
-    <div className='w-1/5 h-screen fixed top-0 bg-base-300 pl-[2%] pt-[80px] overflow-y-scroll'>
+    <div className={ `z-9 w-1/5 h-screen fixed top-0 bg-base-300 pl-[2%] pt-[80px] overflow-y-scroll duration-500 ${isMobile ? (sidebarOpen ? 'left-0 w-2/3 ' : '-left-full') : (sidebarOpen ? 'w-1/5' : 'small')}`}>
         <div className='links text-lg font-semibold'>
             <div className='flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3'>
                 <i className="ri-home-4-line"></i><p>Home</p>
@@ -70,20 +80,20 @@ const Sidebar = () => {
             <hr className='bg-content w-60'/>
         </div>
         <div className='flex flex-col my-2 gap-2'>
-            <h1 className='text-2xl mb-2 font-bold'>Subscribed</h1>
-            <div className='text-lg flex items-center  gap-2 font-semibold'>
+            <p className='text-2xl mb-2 font-bold'>Subscribed</p>
+            <div className='text-lg flex items-center  gap-2 font-semibold  cursor-pointer'>
                 <i className="ri-user-line px-3 py-2 bg-base-100 rounded-full"></i><p>Souvik Dutta</p>
             </div>
-            <div className='text-lg flex items-center gap-2 font-semibold'>
+            <div className='text-lg flex items-center gap-2 font-semibold cursor-pointer'>
                 <i className="ri-user-line px-3 py-2 bg-base-100 rounded-full"></i><p>Souvik Dutta</p>
             </div>
-            <div className='text-lg flex items-center gap-2 font-semibold'>
+            <div className='text-lg flex items-center gap-2 font-semibold cursor-pointer'>
                 <i className="ri-user-line px-3 py-2 bg-base-100 rounded-full"></i><p>Souvik Dutta</p>
             </div>
-            <div className='text-lg flex items-center gap-2 font-semibold'>
+            <div className='text-lg flex items-center gap-2 font-semibold cursor-pointer'>
                 <i className="ri-user-line px-3 py-2 bg-base-100 rounded-full"></i><p>Souvik Dutta</p>
             </div>
-            <div className='text-lg flex items-center gap-2 font-semibold'>
+            <div className='text-lg flex items-center gap-2 font-semibold cursor-pointer'>
                 <i className="ri-user-line px-3 py-2 bg-base-100 rounded-full"></i><p>Souvik Dutta</p>
             </div>
         </div>

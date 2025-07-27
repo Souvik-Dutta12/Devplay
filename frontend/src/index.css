@@ -2,3 +2,41 @@
 @plugin "daisyui" {
   themes: coffee --default;
 }
+
+/* .small{
+  width: 90px;
+  overflow-x: hidden;
+}
+.small p{
+  display: none;
+}
+.small hr{
+  width: 50%;
+  margin-bottom: 25px;
+}
+.small .ri-user-line{
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+
+} */
+@media screen and (min-width: 1024px) {
+  .small {
+    width: 90px !important;
+    overflow-x: hidden;
+  }
+
+  .small p {
+    display: none;
+  }
+
+  .small hr {
+    width: 50%;
+    margin-bottom: 25px;
+  }
+
+  .small .ri-user-line {
+    padding: 5px 7px;
+  }
+}
