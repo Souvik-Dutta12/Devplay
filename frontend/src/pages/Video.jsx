@@ -2,15 +2,19 @@ import React from 'react'
 import PlayVideo from '../components/PlayVideo'
 import Recomended from '../components/Recomended'
 import { useParams } from 'react-router-dom'
+import Sidebar from '../components/Sidebar'
 
-const Video = () => {
+const Video = ({ sidebarOpen, setSidebarOpen }) => {
 
-  const {videoId, categoryId} = useParams();
+
 
   return (
-    <div className='px-3 md:px-10 py-7 flex flex-col md:flex-row justify-between gap-5'>
-        <PlayVideo videoId={videoId} />
+    <div className='px-0 py-7 flex flex-col md:flex-row justify-between gap-5'>
+      <Sidebar sidebarOpen={sidebarOpen} />
+      <div className={`  pr-0 md:pr-3 pt-2 pb-2 gap-3 duration-500 flex flex-col md:flex-row ${sidebarOpen ? 'pl-0 md:pl-75' : 'pl-0 md:pl-25'}`}>
+        <PlayVideo setSidebarOpen={setSidebarOpen} />
         <Recomended />
+      </div>
     </div>
   )
 }

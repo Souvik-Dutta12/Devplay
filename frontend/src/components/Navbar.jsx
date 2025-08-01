@@ -6,14 +6,14 @@ const Navbar = ({setSidebarOpen}) => {
     return (
         <div className='flex w-[100vw] items-center px-5 py-3 shadow-xl justify-between bg-base-300 sticky top-0 z-10'>
             <div className='left flex items-center'>
-                <i onClick={()=>setSidebarOpen(prev=>!prev)} className="ri-menu-2-line text-xl font-bold mr-[25px] cursor-pointer"></i>
+                <i onClick={()=>setSidebarOpen(prev=>!prev)} className="ri-menu-2-line text-xl font-bold mr-[25px] ml-[20px] cursor-pointer"></i>
                 <Link to="/" className='flex items-center text-xl ml-0 md:ml-5 cursor-pointer'>
                     <img className='w-10' src={logo} alt='logo' />
                     <p className='font-bold'> Devplay</p>
                 </Link>
             </div>
 
-            <div className='midle flex items-center'>
+            <div className=' flex items-center'>
                 <div className=' items-center border rounded-full w-[550px] py-2 hidden md:flex'>
 
                     <input className='w-full outline-none bg-transparent px-4' type="text" placeholder='Search' />

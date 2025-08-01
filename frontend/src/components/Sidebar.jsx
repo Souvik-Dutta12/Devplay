@@ -10,7 +10,13 @@ const [isMobile, setIsMobile] = useState(false);
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+    
   }, []);
+
+  useEffect(()=>{
+    console.log(sidebarOpen)
+  },[sidebarOpen])
+
   return (
     <div className={ `z-9 w-1/5 h-screen fixed top-0 bg-base-300 pl-[2%] pt-[80px] overflow-y-scroll duration-500 ${isMobile ? (sidebarOpen ? 'left-0 w-2/3 ' : '-left-full') : (sidebarOpen ? 'w-1/5' : 'small')}`}>
         <div className='links text-lg font-semibold'>
