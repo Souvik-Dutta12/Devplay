@@ -5,7 +5,7 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 import { ApiResponse } from '../utils/apiResponse.js';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
-import { uploadOncloudinary } from '../utils/cloudinary.js';
+import { uploadOnCloudinary } from '../utils/cloudinary.js';
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -203,7 +203,7 @@ const updateAvatar = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Profile image is required.");
   }
 
-  const uploadedImage = await uploadOncloudinary(avatarLocalPath);
+  const uploadedImage = await uploadOnCloudinary(avatarLocalPath);
 
   if (!uploadedImage.url) {
     throw new ApiError(500, "Error while uploading profile image.");
@@ -225,7 +225,7 @@ const updateCoverImage = asyncHandler(async (req,res) => {
   if (!coverImageLocalPath) {
     throw new ApiError(400, "Cover image is required.");
   }
-  const uploadedImage = await uploadOncloudinary(coverImageLocalPath);
+  const uploadedImage = await uploadOnCloudinary(coverImageLocalPath);
   if (!uploadedImage.url) {
     throw new ApiError(500, "Error while uploading cover image.");
   } 
