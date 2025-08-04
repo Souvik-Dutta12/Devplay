@@ -22,10 +22,12 @@ const Navbar = ({setSidebarOpen}) => {
             </div>
 
             <div className='right flex items-center text-xl mr-0 md:mr-5 gap-8'>
+                <Link to={'/upload'}>
                 <div className='flex items-center gap-4  bg-base-100 px-3 py-2 rounded-full cursor-pointer '>
                     <i className="ri-add-fill "></i>
                     <h1 className='text-lg'>Create</h1>
                 </div>
+                </Link>
                 <i className="ri-apps-2-fill cursor-pointer hidden md:flex"></i>
                 <i className="ri-notification-4-line cursor-pointer hidden md:flex"></i>
                 <i className="ri-user-line cursor-pointer rounded-full bg-base-100 px-3 py-2"></i>
