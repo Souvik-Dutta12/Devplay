@@ -1,25 +1,31 @@
-import {Router} from "express";
-import { 
-    getMyProfile,
-  updateMyProfile,
-  getUserByUsername,
-  subscribeToUser,
-  unsubscribeFromUser,
-  addToWatchHistory
+import { Router } from "express";
+import {
+  signUpUser,
+  loginUser,
+  logoutUser,
+  refreshAccessToken,
+  updateAvatar,
+  updateCoverImage,
+  getUserById,
+  getVideosByUser
 } from "../controllers/user.controller.js";
-import {upload,uploadFields} from "../middlewares/multer.middleware.js"
+import { upload, uploadFields } from "../middlewares/multer.middleware.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-// Protected routes
-router.get("/me", verifyJWT, getMyProfile);
-router.patch("/update", verifyJWT, uploadFields, updateMyProfile);
-router.post("/history", verifyJWT, addToWatchHistory);
-router.post("/subscribe/:username", verifyJWT, subscribeToUser);
-router.post("/unsubscribe/:username", verifyJWT, unsubscribeFromUser);
+router.route("/signup").post(signUpUser)
+router.route("/login").post(loginUser)
 
-// Public route
-router.get("/:username", getUserByUsername);
+
+// Protected routes
+router.route("/user/logout").post(verifyJWT, logoutUser)
+router.route("/user/refresh-token").post(refreshAccessToken)
+router.route("/user/avatar").patch(verifyJWT,upload.single("avatar"),updateAvatar)
+router.route("/user/coverImage").patch(verifyJWT,upload.single("coverImage"),updateCoverImage)
+router.route("/user/:userId").get(verifyJWT, getUserById)
+
+
+router.route("/user/:userId/videos").get(verifyJWT, getVideosByUser);
 
 export default router;

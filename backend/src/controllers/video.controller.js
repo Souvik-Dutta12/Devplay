@@ -1,36 +1,41 @@
 import mongoose, {isValidObjectId} from "mongoose"
 import {Video} from "../models/video.model.js"
 import {User} from "../models/user.model.js"
-import {ApiError} from "../utils/ApiError.js"
-import {ApiResponse} from "../utils/ApiResponse.js"
+import { ApiError } from "../utils/apiError.js"
+import { ApiResponse } from "../utils/apiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 
 
 const getAllVideos = asyncHandler(async (req, res) => {
-    const { query, sortBy = "createdAt", sortType = "desc",clerkId } = req.query
-    //TODO: get all videos based on query, sort, pagination
-    const filters = {};
-        if (query) {
-            filters.title = { $regex: query, $options: "i" }; // Case-insensitive search by title
-        }
-        if (clerkId) {
-            filters.userId = clerkId; // Filter by user ID if provided
-        }
+  const { query, sortBy = "createdAt", sortType = "desc", userId } = req.query;
 
-        const sortOptions = {};
-        sortOptions[sortBy] = sortType === "asc" ? 1 : -1;
+  // Build filters
+  const filters = {};
+  if (query) {
+    filters.title = { $regex: query, $options: "i" }; // Case-insensitive search by title
+  }
+  if (userId) {
+    filters.userId = userId; // Filter by user ID from query param
+  }
 
-        const videos = await Video.find(filters)
-            .sort(sortOptions)
+  // Sorting logic
+  const sortOptions = {};
+  sortOptions[sortBy] = sortType === "asc" ? 1 : -1;
 
-        const totalVideos = await Video.countDocuments(filters);
+  // Fetch videos
+  const videos = await Video.find(filters).sort(sortOptions);
 
-        res.status(200).json({
-            success: true,
-            data: videos,     
-        });
-})
+  // Count total for pagination, if needed
+  const totalVideos = await Video.countDocuments(filters);
+
+  res.status(200).json({
+    success: true,
+    data: videos,
+    total: totalVideos,
+  });
+});
+
 
 const publishAVideo = asyncHandler(async (req, res) => {
     const { title, description} = req.body
@@ -152,27 +157,6 @@ const deleteVideo = asyncHandler(async (req, res) => {
     )
 })
 
-const togglePublishStatus = asyncHandler(async (req, res) => {
-    const { videoId } = req.params
-
-    if(!videoId){
-        throw new ApiError(400, "Video id not matched");
-    }
-
-    const video = await Video.findById(videoId);
-
-    if(!video){
-        throw new ApiError(404, "Video not found");
-    }
-
-    video.isPublished = !video.isPublished;
-
-    return res
-    .status(200)
-    .json(
-        new ApiResponse(200, video, "Video publish status updated successfully")
-    )
-})
 
 export {
     getAllVideos,
@@ -180,5 +164,4 @@ export {
     getVideoById,
     updateVideo,
     deleteVideo,
-    togglePublishStatus
 }
