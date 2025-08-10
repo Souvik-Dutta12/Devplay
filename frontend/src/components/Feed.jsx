@@ -58,7 +58,7 @@ const Feed = ({ setSidebarOpen }) => {
                                 <i className="ri-more-2-line text-lg mt-2 font-bold"></i>
                             </div>
 
-                            <h3 className='text-md font-semibold text-base-content/60 hover:text-base-content cursor-pointer duration-200'>{video.description.slice(0, 100)}</h3>
+                            <h3 className='text-md font-semibold  text-base-content/60 hover:text-base-content cursor-pointer duration-200'>{video.description.slice(0, 50)}</h3>
                             <p className='text-sm font-semibold text-base-content/60'>
                                 {formatViews(video.views)} views &bull;{timeAgo(video.createdAt)}
                             </p>

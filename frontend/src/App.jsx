@@ -47,7 +47,7 @@ const App = () => {
         </>
           )
         }
-        <Route path='/upload' element={<UploadVideo />}/>
+        <Route path='/upload' element={<UploadVideo sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>}/>
         <Route path='/videos/:videoId' element={<Video sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>}/>
         <Route path='/profile' element={<Profile sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>}/>
         <Route path='*'element={<div className='text-7xl font-bold '>404 - Page Not Found</div>} />

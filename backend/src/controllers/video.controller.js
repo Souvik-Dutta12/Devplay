@@ -52,9 +52,10 @@ const publishAVideo = asyncHandler(async (req, res) => {
     if (!videoFileLocalPath || !thumbnailLocalPath) {
         throw new ApiError(400, "Video file and thumbnail are required");
     }
-
+    
     const videoFile = await uploadOnCloudinary(videoFileLocalPath);
     const thumbnail = await uploadOnCloudinary(thumbnailLocalPath);
+    console.log(videoFile,thumbnail);
 
     if (!videoFile || !thumbnail) {
         throw new ApiError(500, "Failed to upload video file or thumbnail");

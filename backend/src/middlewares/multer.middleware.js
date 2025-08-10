@@ -10,9 +10,8 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
+const upload = multer({ storage, limits: { fileSize: 200 * 1024 * 1024 }});
 
-// Export middleware that handles avatar and coverImage
 const uploadFields = upload.fields([
   { name: "avatar", maxCount: 1 },
   { name: "coverImage", maxCount: 1 },
