@@ -9,37 +9,46 @@ import Signup from './pages/Signup'
 import Login from './pages/Login'
 import UploadVideo from './pages/UploadVideo'
 import { ToastContainer } from 'react-toastify'
+import { useAppContext } from './context/AppContext'
 
 
 const App = () => {
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
+  const {user} = useAppContext();
+
   return (
     <div>
 
 
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        pauseOnHover
-        theme='dark'
-      />
+<ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  pauseOnHover
+  theme="colored" // base theme
+/>
+
 
 
       <Navbar setSidebarOpen={setSidebarOpen}/>
 
       <Routes>
         <Route path='/' element={<Home sidebarOpen={sidebarOpen}  setSidebarOpen={setSidebarOpen}/>}/>
-        <Route path='/signup' element={<Signup />}/>
+        {
+          !user && (<>
+            <Route path='/signup' element={<Signup />}/>
         <Route path='/login' element={<Login />}/>
+        </>
+          )
+        }
         <Route path='/upload' element={<UploadVideo />}/>
-        <Route path='/video/:categoryId/:videoId' element={<Video sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>}/>
+        <Route path='/videos/:videoId' element={<Video sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>}/>
         <Route path='/profile' element={<Profile sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>}/>
         <Route path='*'element={<div className='text-7xl font-bold '>404 - Page Not Found</div>} />
         

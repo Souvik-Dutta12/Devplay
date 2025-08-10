@@ -3,7 +3,7 @@ import { createContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 const AppContext = createContext();
@@ -18,21 +18,15 @@ export const AppProvider = ({ children }) => {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 
 
-    const fetchVideos = async () => {
-        try {
-            const res = await axios.get("/videos/")
-            console.log(res)
-            res ? setvideos(res.data) : toast.error(data.data.message);
-        } catch (error) {
-            <div className="toast toast-top toast-end" id="toast-container">{error.message}</div>
-        }
-    }
 
     useEffect(() => {
-        if(user){
-            fetchVideos();
+        const storedToken = localStorage.getItem("token") || sessionStorage.getItem("token");
+        if (storedToken) {
+            setToken(storedToken);
+            axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
         }
-    }, [videos]);
+    }, []);
+
 
     useEffect(() => {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -113,7 +107,8 @@ export const AppProvider = ({ children }) => {
         filter,
         setFilter,
         user,
-        setUser
+        setUser,
+
     }
     return (
 

@@ -28,3 +28,31 @@
   border-bottom: 2px solid #714321;
 
 }
+
+
+
+/* Toast background - deep coffee brown */
+.Toastify__toast {
+  background-color: #4b2e2b !important;
+  color: #f5e6d3 !important; /* cream text */
+}
+
+/* Success toast */
+.Toastify__toast--success {
+  background-color: #6f4e37 !important; /* latte brown */
+}
+
+/* Error toast */
+.Toastify__toast--error {
+  background-color: #5c2c1c !important; /* dark roast */
+}
+
+/* Warning toast */
+.Toastify__toast--warning {
+  background-color: #a9745b !important; /* caramel */
+}
+
+/* Progress bar in creamy beige */
+.Toastify__progress-bar {
+  background: #d2b48c !important;
+}

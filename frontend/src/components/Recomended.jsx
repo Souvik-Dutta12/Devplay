@@ -1,6 +1,7 @@
 import React from 'react'
 import thumnail from '/thumbnil.jpeg'
 const Recomended = () => {
+  
   return (
     <div className='w-full md:w-1/3 flex flex-col gap-1 px-3 md:px-0'>
       {Array(10).fill().map((_, index) => (

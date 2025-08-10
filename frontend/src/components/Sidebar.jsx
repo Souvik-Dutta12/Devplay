@@ -5,7 +5,7 @@ const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 1024); // Tailwind lg = 1024px
+      setIsMobile(window.innerWidth < 1024); 
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -17,10 +17,10 @@ const [isMobile, setIsMobile] = useState(false);
   return (
     <div className={ `z-9 w-1/5 h-screen fixed top-0 bg-base-300 pl-[2%] pt-[80px] overflow-y-scroll duration-500 ${isMobile ? (sidebarOpen ? 'left-0 w-2/3 ' : '-left-full') : (sidebarOpen ? 'w-1/5' : 'small')}`}>
         <div className='links text-lg font-semibold'>
-            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === 0 ? "active": ""}`} onClick={() => setCategory(0)}>
+            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === "" ? "active": ""}`} onClick={() => setCategory("")}>
                 <i className="ri-home-4-line"></i><p>Home</p>
             </div>
-            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === 42 ? "active": ""}`} onClick={()=>setCategory(42)}>
+            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === "shorts" ? "active": ""}`} onClick={()=>setCategory("shorts")}>
                 <i className="ri-movie-ai-line"></i><p>Shorts</p>
             </div>
             <div className='flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3'>
@@ -46,35 +46,35 @@ const [isMobile, setIsMobile] = useState(false);
         
         <div className='links text-lg font-semibold mt-2'>
             <p className='text-xl font-bold mb-3'>Explore</p>
-            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === 0 ? "active": ""}`} onClick={()=>setCategory(0)}>
+            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === "shopping" ? "active": ""}`} onClick={()=>setCategory("shopping")}>
                 <i className="ri-shopping-bag-line"></i><p>Shopping</p>
             </div>
-             <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === 10 ? "active": ""}`} onClick={()=>setCategory(10)}>
+             <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === "music" ? "active": ""}`} onClick={()=>setCategory("music")}>
                 <i className="ri-music-2-line"></i><p>Music</p>
             </div>
-            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === 30 ? "active": ""}`} onClick={()=>setCategory(30)}>
+            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === "movies" ? "active": ""}`} onClick={()=>setCategory("movies")}>
                <i className="ri-film-line"></i><p>Movies</p>
             </div>
-            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === 0 ? "active": ""}`} onClick={()=>setCategory(0)}>
+            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === "live" ? "active": ""}`} onClick={()=>setCategory("live")}>
                 <i className="ri-live-line"></i><p>Live</p>
             </div>
            
-            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === 20 ? "active": ""}`} onClick={()=>setCategory(20)}>
+            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === "gaming" ? "active": ""}`} onClick={()=>setCategory("gaming")}>
                 <i className="ri-gamepad-line"></i><p>Gaming</p>
             </div>
-            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === 25 ? "active": ""}`} onClick={()=>setCategory(25)}>
+            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === "news" ? "active": ""}`} onClick={()=>setCategory("news")}>
                <i className="ri-news-line"></i><p>News</p>
             </div>
-            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === 17 ? "active": ""}`} onClick={()=>setCategory(17)}>
+            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === "sports" ? "active": ""}`} onClick={()=>setCategory("sports")}>
                 <i className="ri-trophy-line"></i><p>Sports</p>
             </div>
-            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === 27 ? "active": ""}`} onClick={()=>setCategory(27)}>
+            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === "courses" ? "active": ""}`} onClick={()=>setCategory("courses")}>
                 <i className="ri-graduation-cap-line"></i><p>Courses</p>
             </div>
-            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === 26 ? "active": ""}`} onClick={()=>setCategory(26)}>
+            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === "fashion" ? "active": ""}`} onClick={()=>setCategory("fashion")}>
                 <i className="ri-shirt-line"></i><p>Fashion & Beauty</p>
             </div>
-            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === 0 ? "active": ""}`} onClick={()=>setCategory(0)}>
+            <div className={`flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3 ${category === "podcasts" ? "active": ""}`} onClick={()=>setCategory("podcasts")}>
                 <i className="ri-signal-tower-line"></i><p>Podcasts</p>
             </div>
             

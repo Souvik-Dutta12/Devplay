@@ -77,7 +77,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
     }
     await video.save();
 
-    const publishedVideo = await Video.findById(video._id);
+    const publishedVideo = await Video.findById(video._id).populate("owner","username channelName avatar subscribers");
     if (!publishedVideo) {
         throw new ApiError(500, "Something went wrong while publishing the video");
     }
@@ -99,13 +99,14 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
 const getVideoById = asyncHandler(async (req, res) => {
     const { videoId } = req.params
-    //TODO: get video by id
 
-    const currentVideo = await Video.findById(videoId)
+    const currentVideo = await Video.findById(videoId).populate("owner","username channelName avatar subscribers");
 
     if (!currentVideo) {
         throw new ApiError(404, "Video not found")
     }
+
+    
 
     return res
         .status(200)

@@ -6,7 +6,7 @@ import { Navigate } from 'react-router-dom';
 
 const Home = ({sidebarOpen,setSidebarOpen}) => {
 
-  const [category, setCategory] = useState(0);
+  const [category, setCategory] = useState("");
 
   const {user} = useAppContext();
 
