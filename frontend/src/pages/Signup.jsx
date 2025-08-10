@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext';
+import { toast } from 'react-toastify';
 
 const Signup = () => {
+
+  const { axios, token, setToken, navigate, setUser } = useAppContext();
+
   const [formData, setFormData] = useState({
     channelName: '',
     username: '',
     password: '',
-    about: '',
+    description: '',
     image: null,
   });
 
@@ -19,10 +24,46 @@ const Signup = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    alert('Signup submitted!');
+
+    if (!formData.username || !formData.password || !formData.channelName || !formData.description) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+    if (formData.password.length < 8) {
+      toast.error("Password must be at least 8 characters long");
+      return;
+    }
+
+    try {
+      const res = await axios.post("/users/signup", formData);
+
+      if (res.data.success) {
+        toast.success("Signup successful");
+        const response = await axios.post("/users/login", {
+          username: formData.username,
+          password: formData.password
+        })
+
+        if (response.data.success) {
+          toast.success("Login successful");
+
+          const accessToken = response.data.data.accessToken;
+          const loggedInUser = response.data.data.user;
+
+          setToken(accessToken);
+          setUser(loggedInUser);
+
+          localStorage.setItem("token", accessToken);
+          localStorage.setItem("user", JSON.stringify(loggedInUser));
+          axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+          navigate("/");
+        }
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -78,8 +119,8 @@ const Signup = () => {
           <div>
             <label className="block mb-1 font-semibold text-base-content">About Your Channel</label>
             <textarea
-              name="about"
-              value={formData.about}
+              name="description"
+              value={formData.description}
               onChange={handleChange}
               rows="3"
               placeholder="Describe what your channel is about..."
@@ -96,7 +137,7 @@ const Signup = () => {
               accept="image/*"
               onChange={handleChange}
               className="file-input file-input-bordered w-full cursor-pointer"
-              required
+
             />
           </div>
 

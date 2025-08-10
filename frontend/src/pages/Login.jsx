@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '/devplayLogo.png';
+import { useAppContext } from '../context/AppContext';
+import { toast } from 'react-toastify';
 
 const Login = () => {
+
+  const { axios, setToken, navigate, setUser } = useAppContext();
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -13,10 +17,22 @@ const Login = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    alert('Login submitted!');
+    try {
+      const res = await axios.post("/users/login", formData);
+      const token = res.data.data.accessToken;
+      const user = res.data.data.user;
+      setToken(token);
+      setUser(user);
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      navigate("/");
+    } catch (error) {
+      toast.error("Login Failed" || error.message)
+    }
   };
 
   return (
