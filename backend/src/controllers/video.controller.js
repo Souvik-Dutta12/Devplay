@@ -13,10 +13,10 @@ const getAllVideos = asyncHandler(async (req, res) => {
     // Build filters
     const filters = {};
     if (query) {
-        filters.title = { $regex: query, $options: "i" }; // Case-insensitive search by title
+        filters.title = { $regex: query, $options: "i" }; 
     }
     if (userId) {
-        filters.userId = userId; // Filter by user ID from query param
+        filters.userId = userId; 
     }
 
     // Sorting logic
@@ -24,7 +24,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
     sortOptions[sortBy] = sortType === "asc" ? 1 : -1;
 
     // Fetch videos
-    const videos = await Video.find(filters).sort(sortOptions);
+    const videos = await Video.find(filters).populate("owner","username channelName avatar").sort(sortOptions);
 
     // Count total for pagination, if needed
     const totalVideos = await Video.countDocuments(filters);

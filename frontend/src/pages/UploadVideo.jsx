@@ -4,10 +4,10 @@ import Sidebar from '../components/Sidebar';
 import { useAppContext } from '../context/AppContext';
 import { toast } from 'react-toastify';
 const TAG_OPTIONS = [
+    'Shorts',
     'Shopping',
     'Music',
     'Movies',
-    'Live',
     'Gaming',
     'News',
     'Sports',
@@ -28,7 +28,7 @@ const UploadVideo = ({ sidebarOpen, setSidebarOpen }) => {
     const [thumbnailPreview, setThumbnailPreview] = useState(null);
     const [videoPreview, setVideoPreview] = useState(null);
     const [loading, setLoading] = useState(false);
-
+const [category, setCategory] = useState("")
 
     const { axios, token, navigate } = useAppContext();
 
@@ -88,7 +88,7 @@ const UploadVideo = ({ sidebarOpen, setSidebarOpen }) => {
     return (
         <>
 
-            <Sidebar sidebarOpen={sidebarOpen} />
+            <Sidebar sidebarOpen={sidebarOpen} category={category} setCategory={setCategory}/>
 
             <div className={`min-h-screen w-full bg-base-200 p-5 md:p-10 text-base-content pr-0 md:pr-3 pt-2 pb-2 gap-3 duration-500 flex flex-col ${sidebarOpen ? 'pl-0 md:pl-77' : 'pl-0 md:pl-25'}`}>
                 <h1 className="text-3xl font-bold mb-10 text-center">Upload a New Video</h1>
@@ -137,7 +137,7 @@ const UploadVideo = ({ sidebarOpen, setSidebarOpen }) => {
                                     value={formData.tag}
                                     onChange={handleChange}
                                     className="select select-bordered select-primary text-lg cursor-pointer w-50"
-                                    required
+                                    
                                 >
                                     <option className='text-lg' value="">-- Choose a tag --</option>
                                     {TAG_OPTIONS.map((tag, i) => (

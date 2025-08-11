@@ -5,14 +5,14 @@ import axios from "axios"
 import moment from 'moment'
 import { useAppContext } from '../context/AppContext'
 import { toast } from 'react-toastify'
-import { timeAgo,formatViews } from '../common/common.js'
+import { timeAgo, formatViews } from '../common/common.js'
 const Feed = ({ setSidebarOpen }) => {
 
     const [loading, setLoading] = useState(true);
-    const { user, token, axios, videos, setVideos } = useAppContext();
+    const { user, token, axios, videos, setVideos, filter } = useAppContext();
 
     const fetchVideos = async ({
-        query = "",
+        query = `${filter}`,
         sortBy = "createdAt",
         sortType = "desc",
         userId = "",
@@ -25,6 +25,7 @@ const Feed = ({ setSidebarOpen }) => {
             if (sortType) params.sortType = sortType;
 
             const res = await axios.get("/videos/", { params, headers: { Authorization: `Bearer ${token}` } });
+            console.log(res)
             if (res?.data?.success) {
                 setVideos(res.data.data);
                 console.log(res.data.data)
@@ -39,7 +40,8 @@ const Feed = ({ setSidebarOpen }) => {
         if (user && token) {
             fetchVideos();
         }
-    }, [user, token]);
+
+    }, [user, token, filter]);
 
 
     return (
@@ -51,17 +53,19 @@ const Feed = ({ setSidebarOpen }) => {
                     <Link to={`/videos/${video._id}`} className='card hover:bg-base-300/60 hover:scale-[1.02] p-3 flex flex-col items-center justify-center duration-500'
                         onClick={() => setSidebarOpen(false)}
                         key={index}>
-                        <img className='w-[95%] max-h-63 rounded-xl' src={video.thumbnail} alt="" />
-                        <div className='w-[95%]'>
-                            <div className='flex justify-between '>
-                                <h2 className='text-lg font-bold mt-2'>{video.title}</h2>
-                                <i className="ri-more-2-line text-lg mt-2 font-bold"></i>
+                        <img className='w-[95%] h-65 rounded-xl object-center' src={video.thumbnail} alt="" />
+                        <div className='w-[95%] flex gap-3 items-center'>
+                            <img src={video?.owner?.avatar} alt="" className='w-15 h-15 rounded-full' />
+                            <div className='w-full'>
+                                <div className='flex justify-between '>
+                                    <h2 className='text-lg font-bold mt-2'>{video.title}</h2>
+                                    <i className="ri-more-2-line text-lg mt-2 font-bold"></i>
+                                </div>
+                                <h3 className='text-md font-semibold  text-base-content/60 hover:text-base-content cursor-pointer duration-200'>{video?.owner?.channelName}</h3>
+                                <p className='text-sm font-semibold text-base-content/60'>
+                                    {formatViews(video.views)} views &bull;{timeAgo(video.createdAt)}
+                                </p>
                             </div>
-
-                            <h3 className='text-md font-semibold  text-base-content/60 hover:text-base-content cursor-pointer duration-200'>{video.description.slice(0, 50)}</h3>
-                            <p className='text-sm font-semibold text-base-content/60'>
-                                {formatViews(video.views)} views &bull;{timeAgo(video.createdAt)}
-                            </p>
 
                         </div>
                     </Link>

@@ -40,7 +40,7 @@ const PlayVideo = ({ setSidebarOpen }) => {
 
     return (
         <div className='w-full px-3 md:px-0 md:pl-7  md:w-2/3'>
-            <iframe className='w-full h-[300px] md:h-[500px] rounded-xl' src={vidData?.videoFile
+            <iframe className='w-full h-[200px] md:h-[450px] rounded-xl' src={vidData?.videoFile
             } allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"  ></iframe>
             <h3 className='text-2xl font-bold mt-3'>{vidData?.title}</h3>
             <div className="flex items-center justify-between flex-wrap mt-1 text-sm text-base-content/60">
@@ -84,7 +84,7 @@ const PlayVideo = ({ setSidebarOpen }) => {
 
                 <div className='flex flex-col gap-3 items-center justify-between mt-3'>
                     {
-                        vidData?.likes.map((comment, index) => (
+                        vidData?.comments.map((comment, index) => (
                             <div className='flex' key={index}>
                                 <img src={`#`} className="ri-user-line flex items-center justify-center text-2xl bg-base-300 rounded-full w-12 h-12 text-center flex-shrink-0" />
                                 <div className='flex flex-col ml-3'>
