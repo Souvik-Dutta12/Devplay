@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import moment from 'moment';
-import thumbnail from '/thumbnil.jpeg'
 import { useAppContext } from '../context/AppContext';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
@@ -9,9 +7,16 @@ import { timeAgo, formatViews } from '../common/common';
 const PlayVideo = ({ setSidebarOpen }) => {
 
     const { videoId } = useParams();
-    const { axios, token } = useAppContext();
-
+    const { axios, token, user } = useAppContext();
     const [vidData, setVidData] = useState(null);
+    const [vidComments, setVidComments] = useState([]);
+    const [newComment, setNewComment] = useState("");
+    const [showFullDesc, setShowFullDesc] = useState(false);
+    const [isLiked, setIsLiked] = useState(false);
+    const [isCommentLike, setIsCommentLike] = useState(false);
+    const [commentLikes, setCommentLikes] = useState({});
+
+
     const fetchVideo = async () => {
         if (!token) {
             toast.error("No token found. Please log in.");
@@ -29,19 +34,118 @@ const PlayVideo = ({ setSidebarOpen }) => {
         }
     };
 
+    const fetchComments = async () => {
+        if (!token) {
+            toast.error("No token found. Please log in.");
+            return;
+        }
+        try {
+            const res = await axios.get(`/comments/${videoId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setVidComments(res.data.data)
+        } catch (error) {
+            toast.error('Failed to fetch comments');
+        }
+    }
+
+    const handleComment = async () => {
+        if (!token) {
+            toast.error("Please log in to comment");
+            return;
+        }
+        if (!newComment.trim()) {
+            toast.error("Comment cannot be empty");
+            return;
+        }
+
+        try {
+            await axios.post(
+                `/comments/${videoId}`,
+                { content: newComment },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            setNewComment("");
+            fetchComments();
+            toast.success("Comment posted successfully");
+        } catch (error) {
+            toast.error(error?.response?.data?.message || "Failed to post comment");
+        }
+    };
+
+    const handleCommentLike = (id) => {
+        setCommentLikes(prev => ({
+            ...prev,
+            [id]: !prev[id] // Toggle only this comment's like
+        }));
+        toggleCommentLike(id);
+    };
+
+    const toggleLike = async () => {
+        setIsLiked(prev => !prev);
+        try {
+            const { data } = await axios.post(
+                `/likes/toggle/v/${videoId}`,
+                {},
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            fetchVideo();
+        } catch (error) {
+            setIsLiked(prev => !prev);
+            toast.error(error?.response?.data?.message || "Failed to like video");
+        }
+    };
+    const toggleCommentLike = async (commentId) => {
+
+        try {
+            const { data } = await axios.post(
+                `/likes/toggle/c/${commentId}`,
+                {},
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            fetchComments();
+        } catch (error) {
+
+            toast.error(error?.response?.data?.message || "Failed to like video");
+        }
+    };
+
+    const handleDownload = () => {
+        if (!vidData?.videoFile) {
+            toast.error("No video file found to download");
+            return;
+        }
+
+        // Create a hidden anchor element
+        const link = document.createElement("a");
+        link.href = vidData.videoFile;
+        link.download = vidData.title || "video"; // Suggested filename
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     useEffect(() => {
         if (!token) return;
         fetchVideo();
         setSidebarOpen(false);
-
-        console.log(vidData)
     }, [videoId, token]);
 
+    useEffect(() => {
+        if (!token) return;
+        fetchComments()
+    }, [token])
 
     return (
         <div className='w-full px-3 md:px-0 md:pl-7  md:w-2/3'>
-            <iframe className='w-full h-[200px] md:h-[450px] rounded-xl' src={vidData?.videoFile
-            } allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"  ></iframe>
+            <video
+                className="w-full h-[200px] md:h-[450px] rounded-xl"
+                controls
+                src={vidData?.videoFile}
+            />
+
             <h3 className='text-2xl font-bold mt-3'>{vidData?.title}</h3>
             <div className="flex items-center justify-between flex-wrap mt-1 text-sm text-base-content/60">
                 <p>{formatViews(vidData?.views)} Views &bull; {timeAgo(vidData?.createdAt)}</p>
@@ -60,8 +164,9 @@ const PlayVideo = ({ setSidebarOpen }) => {
                     </div>
                 </div>
                 <div className='flex items-center gap-3'>
-                    <button className='btn flex items-center justify-center rounded-full'>
-                        <i className="ri-thumb-up-line text-xl "></i>{formatViews(vidData?.likes.length)}
+                    <button className='btn flex items-center justify-center rounded-full' onClick={toggleLike}>
+                        {isLiked ? <i className="ri-thumb-up-fill text-xl "></i> : <i className="ri-thumb-up-line text-xl "></i>}
+                        {formatViews(vidData?.likes.length)}
                     </button>
                     <button className='btn flex items-center justify-center rounded-full'>
                         <i className="ri-thumb-down-line text-xl "></i>
@@ -69,32 +174,70 @@ const PlayVideo = ({ setSidebarOpen }) => {
                     <button className='btn flex items-center justify-center rounded-full'>
                         <i className="ri-share-forward-line text-xl "></i>Share
                     </button>
-                    <button className='btn flex items-center justify-center rounded-full'>
+                    <button className='btn flex items-center justify-center rounded-full' onClick={handleDownload}>
                         <i className="ri-download-line text-xl "></i>Download
                     </button>
                 </div>
             </div>
             <hr className='mt-3' />
-            <div className='mt-3 mx-2 px-5 py-2 bg-base-300 rounded-xl'>
-                <p>{vidData?.description.slice(0, 250)}<span className='text-base-content/60 hover:underline hover:text-base-content hover:font-bold cursor-pointer duration-300'> See more ...</span></p>
+            <div
+                className={`mt-3 mx-auto px-5 py-2 bg-base-300 rounded-xl w-[700px] transition-all  overflow-y-auto
+        ${showFullDesc ? 'h-auto' : 'h-auto overflow-hidden'} duration-300`}
+            >
+                <p className='break-words'>
+                    {vidData?.description
+                        ? showFullDesc
+                            ? vidData?.description
+                            : vidData?.description.slice(0, 150) + (vidData?.description.length > 150 ? "..." : "")
+                        : "No description available."}
+
+                    {vidData?.description?.length > 150 && (
+                        <span
+                            className='text-base-content/60 hover:underline hover:text-base-content hover:font-bold cursor-pointer duration-300 ml-1'
+                            onClick={() => setShowFullDesc(!showFullDesc)}
+                        >
+                            {showFullDesc ? " See less" : " See more"}
+                        </span>
+                    )}
+                </p>
             </div>
+
             <div className='mt-5 flex flex-col'>
 
-                <h4 className='text-2xl font-bold'>{formatViews(vidData?.likes.length)} Comments</h4>
+                <h4 className='text-2xl font-bold'>{formatViews(vidComments.length)} Comments</h4>
+                <div className='mt-3 w-full flex items-center justify-center gap-3'>
+                    <img src={user.avatar} alt="" className='w-12 h-12 rounded-full ' />
+                    <div className='flex flex-col gap-1 w-full'>
+                        <textarea
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                            cols={1}
+                            className="border-b p-3 border-base-content/60 hover:border-b-2 focus:border-base-content duration-300 w-full h-14 resize-none outline-none focus:ring-0"
+                            placeholder='Drop your comment here...'
+                        ></textarea>
+                        <div className='flex justify-end'>
+                            <button className='btn btn-primary btn-outline rounded-full duration-300' onClick={handleComment}>
+                                Comment
+                            </button>
 
-                <div className='flex flex-col gap-3 items-center justify-between mt-3'>
+                        </div>
+                    </div>
+
+                </div>
+                <div className='flex flex-col gap-3  justify-between mt-3'>
                     {
-                        vidData?.comments.map((comment, index) => (
-                            <div className='flex' key={index}>
-                                <img src={`#`} className="ri-user-line flex items-center justify-center text-2xl bg-base-300 rounded-full w-12 h-12 text-center flex-shrink-0" />
+                        vidComments.map((comment, index) => (
+                            <div className='flex' key={comment._id}>
+                                <img src={comment.owner?.avatar || '/default-avatar.png'} className="ri-user-line flex items-center justify-center text-2xl bg-base-300 rounded-full w-12 h-12 text-center flex-shrink-0" />
                                 <div className='flex flex-col ml-3'>
-                                    <h3 className='font-bold'>authorDisplayName <span className='text-sm text-base-content/60 font-normal ml-3'>20 hours ago</span></h3>
-                                    <p className='flex flex-wrap'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Unde, voluptatum. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eligendi, ipsa.</p>
+                                    <h3 className='font-bold'>@{comment.owner?.username}<span className='text-sm text-base-content/60 font-normal ml-3'>{timeAgo(comment.createdAt)}</span></h3>
+                                    <p className='flex flex-wrap'>{comment.content}</p>
                                     <div className="cmnt-action flex gap-5 items-center text-base-content/60 mt-2">
-                                        <span className='cursor-pointer flex items-center justify-center gap-1  duration-300 hover:text-base-content hover:font-bold'>
-                                            <i className="ri-thumb-up-line"></i>
-                                            <span>30K</span>
-                                        </span>
+                                        <button onClick={() => handleCommentLike(comment._id)} className="cursor-pointer flex items-center justify-center gap-1 duration-300 hover:text-base-content hover:font-bold">
+                                            {commentLikes[comment._id] ? <i className="ri-thumb-up-fill"></i> : <i className="ri-thumb-up-line"></i>}
+                                            <span>{formatViews(comment.likes?.length || 0)}</span>
+                                        </button>
+
 
                                         <span className='cursor-pointer hover:text-base-content hover:font-bold duration-300 '>
                                             <i className="ri-thumb-down-line"></i>

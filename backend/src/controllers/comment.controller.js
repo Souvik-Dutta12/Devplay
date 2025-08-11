@@ -15,7 +15,8 @@ const getVideoComments = asyncHandler(async (req, res) => {
     const comments = await Comment.find({ video: videoId })
     .skip((page - 1) * limit)
     .limit(parseInt(limit))
-    .sort({ createdAt: -1 });
+    .sort({ createdAt: -1 })
+    .populate("owner", "username avatar");
 
     if(!comments){
         throw new ApiError(404, "No comments found")
@@ -50,11 +51,14 @@ const addComment = asyncHandler(async (req, res) => {
         owner: req.user._id
     })
 
+    video.comments.push(comment._id);
+    await video.save();
+
     if(!comment){
         throw new ApiError(500, "Could not create comment")
     }
     
-    const populatedComment = await comment.populate("owner", "name profilePicture")
+    const populatedComment = await comment.populate("owner", "username avatar")
 
     return res
     .status(201)
