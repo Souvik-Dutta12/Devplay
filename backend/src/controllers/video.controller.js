@@ -5,10 +5,10 @@ import { ApiError } from "../utils/apiError.js"
 import { ApiResponse } from "../utils/apiResponse.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
-
+import {Like} from "../models/like.model.js"
 
 const getAllVideos = asyncHandler(async (req, res) => {
-    const { query, sortBy = "createdAt", sortType = "desc", userId } = req.query;
+    const { query = "", sortBy = "createdAt", sortType = "desc", userId } = req.query;
 
     // Build filters
     const filters = {};
@@ -16,7 +16,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
         filters.title = { $regex: query, $options: "i" }; 
     }
     if (userId) {
-        filters.userId = userId; 
+        filters.owner = userId; 
     }
 
     // Sorting logic
@@ -174,6 +174,26 @@ const deleteVideo = asyncHandler(async (req, res) => {
         )
 })
 
+const getLikedVideos = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+
+  // Find all Like documents by this user, populate the video details including owner info
+  const likes = await Like.find({ likedBy: userId })
+    .populate({
+      path: "video",
+      populate: { path: "owner", select: "username channelName avatar" },
+    })
+    .sort({ createdAt: -1 });
+
+  // Extract the video documents from the likes
+  const likedVideos = likes.map(like => like.video).filter(Boolean);
+
+  return res.status(200).json(
+    new ApiResponse(200, likedVideos, "Liked videos fetched successfully")
+  );
+});
+
 
 export {
     getAllVideos,
@@ -181,4 +201,5 @@ export {
     getVideoById,
     updateVideo,
     deleteVideo,
+    getLikedVideos,
 }

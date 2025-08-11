@@ -3,6 +3,8 @@ import { useAppContext } from '../context/AppContext';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import { timeAgo, formatViews } from '../common/common';
+import { Link } from 'react-router-dom';
+import thumbnail from '/thumbnil.jpeg'
 
 const PlayVideo = ({ setSidebarOpen }) => {
 
@@ -15,7 +17,10 @@ const PlayVideo = ({ setSidebarOpen }) => {
     const [isLiked, setIsLiked] = useState(false);
     const [isCommentLike, setIsCommentLike] = useState(false);
     const [commentLikes, setCommentLikes] = useState({});
+    const [disabledLikes, setDisabledLikes] = useState({});
+    const [videoLikeDisabled, setVideoLikeDisabled] = useState(false);
 
+    const userId = user?._id;
 
     const fetchVideo = async () => {
         if (!token) {
@@ -28,7 +33,11 @@ const PlayVideo = ({ setSidebarOpen }) => {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            setVidData(res.data.data);
+            const video = res.data.data;
+            setVidData(video);
+
+            // ✅ Set default like state for video
+            setIsLiked(video.likes?.some(id => id === userId) || false);
         } catch (error) {
             toast.error(error?.response?.data?.message || error.message || 'Failed to fetch data');
         }
@@ -43,7 +52,19 @@ const PlayVideo = ({ setSidebarOpen }) => {
             const res = await axios.get(`/comments/${videoId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setVidComments(res.data.data)
+
+            const comments = res.data.data;
+            const likesMap = {};
+            const disabledMap = {};
+
+            comments.forEach(comment => {
+                likesMap[comment._id] = comment.likes?.some(id => id === userId) || false;
+                disabledMap[comment._id] = false; // initially enabled
+            });
+
+            setVidComments(comments);
+            setCommentLikes(likesMap);
+            setDisabledLikes(disabledMap);
         } catch (error) {
             toast.error('Failed to fetch comments');
         }
@@ -75,25 +96,30 @@ const PlayVideo = ({ setSidebarOpen }) => {
     };
 
     const handleCommentLike = (id) => {
+        if (disabledLikes[id]) return; // already disabled, ignore
+        setDisabledLikes(prev => ({ ...prev, [id]: true }));
+
         setCommentLikes(prev => ({
             ...prev,
-            [id]: !prev[id] // Toggle only this comment's like
+            [id]: !prev[id]
         }));
+
         toggleCommentLike(id);
     };
 
     const toggleLike = async () => {
         setIsLiked(prev => !prev);
+        setVideoLikeDisabled(true); // track video like disabled state
         try {
-            const { data } = await axios.post(
-                `/likes/toggle/v/${videoId}`,
-                {},
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            await axios.post(`/likes/toggle/v/${videoId}`, {}, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             fetchVideo();
         } catch (error) {
             setIsLiked(prev => !prev);
             toast.error(error?.response?.data?.message || "Failed to like video");
+        } finally {
+            setVideoLikeDisabled(false); // re-enable
         }
     };
     const toggleCommentLike = async (commentId) => {
@@ -154,19 +180,23 @@ const PlayVideo = ({ setSidebarOpen }) => {
 
             <div className='flex flex-col md:flex-row gap-5 md:gap-0 items-center justify-between mt-3'>
                 <div className='flex'>
-                    <img src={vidData?.owner?.avatar} className="ri-user-line flex items-center justify-center text-2xl bg-base-300 rounded-full w-12 h-12 text-center " />
+                    <img src={vidData?.owner?.avatar || thumbnail} className="ri-user-line flex items-center justify-center text-2xl bg-base-300 rounded-full w-12 h-12 text-center " />
                     <div className='flex  ml-3 justify-between gap-20'>
                         <div className='flex flex-col gap-0 '>
-                            <p className='font-bold text-lg'>{vidData?.owner?.channelName}</p>
+                            <Link to={`/users/user/${vidData?.owner?._id}`} className='font-bold text-lg'>{vidData?.owner?.channelName}</Link>
                             <span className='text-base-content/60 text-sm'>{formatViews(vidData?.owner?.subscribers?.length)} </span>
                         </div>
                         <button className='btn btn-primary rounded-full'>Subscribe</button>
                     </div>
                 </div>
                 <div className='flex items-center gap-3'>
-                    <button className='btn flex items-center justify-center rounded-full' onClick={toggleLike}>
-                        {isLiked ? <i className="ri-thumb-up-fill text-xl "></i> : <i className="ri-thumb-up-line text-xl "></i>}
-                        {formatViews(vidData?.likes.length)}
+                    <button
+                        className='btn flex items-center justify-center rounded-full'
+                        onClick={toggleLike}
+                        disabled={videoLikeDisabled}
+                    >
+                        {isLiked ? <i className="ri-thumb-up-fill text-xl"></i> : <i className="ri-thumb-up-line text-xl"></i>}
+                        {formatViews(vidData?.likes?.length || 0)}
                     </button>
                     <button className='btn flex items-center justify-center rounded-full'>
                         <i className="ri-thumb-down-line text-xl "></i>
@@ -206,7 +236,7 @@ const PlayVideo = ({ setSidebarOpen }) => {
 
                 <h4 className='text-2xl font-bold'>{formatViews(vidComments.length)} Comments</h4>
                 <div className='mt-3 w-full flex items-center justify-center gap-3'>
-                    <img src={user.avatar} alt="" className='w-12 h-12 rounded-full ' />
+                    <img src={user?.avatar || thumbnail} alt="" className='w-12 h-12 rounded-full ' />
                     <div className='flex flex-col gap-1 w-full'>
                         <textarea
                             value={newComment}
@@ -233,7 +263,11 @@ const PlayVideo = ({ setSidebarOpen }) => {
                                     <h3 className='font-bold'>@{comment.owner?.username}<span className='text-sm text-base-content/60 font-normal ml-3'>{timeAgo(comment.createdAt)}</span></h3>
                                     <p className='flex flex-wrap'>{comment.content}</p>
                                     <div className="cmnt-action flex gap-5 items-center text-base-content/60 mt-2">
-                                        <button onClick={() => handleCommentLike(comment._id)} className="cursor-pointer flex items-center justify-center gap-1 duration-300 hover:text-base-content hover:font-bold">
+                                        <button
+                                            onClick={() => handleCommentLike(comment._id)}
+                                            disabled={disabledLikes[comment._id]}
+                                            className="cursor-pointer flex items-center justify-center gap-1 duration-300 hover:text-base-content hover:font-bold"
+                                        >
                                             {commentLikes[comment._id] ? <i className="ri-thumb-up-fill"></i> : <i className="ri-thumb-up-line"></i>}
                                             <span>{formatViews(comment.likes?.length || 0)}</span>
                                         </button>

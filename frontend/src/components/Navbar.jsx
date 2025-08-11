@@ -12,6 +12,7 @@ const Navbar = ({ setSidebarOpen }) => {
 
     const { user, navigate, setUser, setToken,axios } = useAppContext();
 
+    const userId = user?._id;
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -87,7 +88,7 @@ const Navbar = ({ setSidebarOpen }) => {
                             <div className="absolute right-0 mt-2 w-48 bg-base-300 border border-none rounded-lg shadow-lg z-50">
                                 <ul className="py-2 text-sm text-content">
                                     <li>
-                                        <Link to="/profile" className="block px-4 py-2 hover:bg-base-100 cursor-pointer">
+                                        <Link to={`/users/user/${userId}`} className="block px-4 py-2 hover:bg-base-100 cursor-pointer">
                                             Profile
                                         </Link>
                                     </li>

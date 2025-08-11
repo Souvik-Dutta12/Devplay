@@ -4,14 +4,16 @@ import {
     getAllVideos,
     getVideoById,
     publishAVideo,
-
+    getLikedVideos,
     updateVideo,
 } from "../controllers/video.controller.js"
 import {verifyJWT} from "../middlewares/auth.middleware.js"
 import {upload} from "../middlewares/multer.middleware.js"
 
 const router = Router();
-
+router
+    .route("/likeVideo")
+    .get(verifyJWT,getLikedVideos)
 router
     .route("/")
     .get(verifyJWT,getAllVideos)
@@ -35,6 +37,9 @@ router
     .get(verifyJWT,getVideoById)
     .delete(verifyJWT,deleteVideo)
     .patch(verifyJWT,upload.single("thumbnail"), updateVideo);
+
+
+
 
 // router.route("/toggle/publish/:videoId").patch(togglePublishStatus);
 

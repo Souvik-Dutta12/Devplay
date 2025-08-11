@@ -10,6 +10,7 @@ import Login from './pages/Login'
 import UploadVideo from './pages/UploadVideo'
 import { ToastContainer } from 'react-toastify'
 import { useAppContext } from './context/AppContext'
+import LikedVideo from './pages/LikedVideo'
 
 
 const App = () => {
@@ -49,7 +50,8 @@ const App = () => {
         }
         <Route path='/upload' element={<UploadVideo sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>}/>
         <Route path='/videos/:videoId' element={<Video sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>}/>
-        <Route path='/profile' element={<Profile sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>}/>
+        <Route path='/users/user/:userId' element={<Profile sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>}/>
+        <Route path='/likedVideo' element={<LikedVideo sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>}/>
         <Route path='*'element={<div className='text-7xl font-bold '>404 - Page Not Found</div>} />
         
       </Routes>

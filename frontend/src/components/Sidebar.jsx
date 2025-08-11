@@ -52,9 +52,9 @@ const {filter,setFilter} = useAppContext();
             <div className='flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3'>
                <i className="ri-time-line"></i><p>Watch later</p>
             </div>
-            <div className='flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3'>
+            <Link to={"/likedVideo"} className='flex items-center mb-3 w-full flex-wrap cursor-pointer gap-3'>
                <i className="ri-thumb-up-line"></i><p>Liked videos</p>
-            </div>
+            </Link>
             <hr className='bg-content w-60'/>
         </div>
         
